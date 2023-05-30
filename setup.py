@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'rosbag_checker_node = rosbag_checker.rosbag_checker_node:main'
+            'rosbag_checker = rosbag_checker.rosbag_checker_node:main'
         ],
     },
 )
