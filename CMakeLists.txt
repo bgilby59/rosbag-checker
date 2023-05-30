@@ -11,8 +11,8 @@ find_package(rclcpp REQUIRED)
 find_package(rosbag2_cpp REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
-add_executable(rosbag_checker_cpp src/rosbag_checker_node.cpp)
-ament_target_dependencies(rosbag_checker_cpp rclcpp rosbag2_cpp yaml-cpp)
+add_executable(rosbag_checker src/rosbag_checker_node.cpp)
+ament_target_dependencies(rosbag_checker rclcpp rosbag2_cpp yaml-cpp)
 
 install(TARGETS
   rosbag_checker
