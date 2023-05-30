@@ -3,7 +3,7 @@
 <package format="3">
   <name>rosbag_checker</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>A ROS2 package to query the contents of a rosbag for message count and message frequency for a given topic.</description>
   <maintainer email="benjamin.gilby@tier4.jp">benjamin-gilby</maintainer>
   <license>TODO: License declaration</license>
 
