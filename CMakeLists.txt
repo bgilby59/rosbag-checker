@@ -15,7 +15,7 @@ add_executable(rosbag_checker_cpp src/rosbag_checker_node.cpp)
 ament_target_dependencies(rosbag_checker_cpp rclcpp rosbag2_cpp yaml-cpp)
 
 install(TARGETS
-  rosbag_checker_cpp
+  rosbag_checker
   DESTINATION lib/${PROJECT_NAME}
 )
 
