@@ -85,18 +85,18 @@ public:
         // 2. Read rosbag and get duration of rosbag GOOD
         auto info_obj = rosbag2_cpp::Info();
 
-        rosbag2_storage::BagMetadata metadata;
+        rosbag2_storage::BagMetadata bag_info;
         if (ends_with(bag_, ".db3")) {
-            metadata = info_obj.read_metadata(bag_, "sqlite3");
+            bag_info = info_obj.read_metadata(bag_, "sqlite3");
         }
         else if (ends_with(bag_, ".mcap")) {
-            metadata = info_obj.read_metadata(bag_, "mcap");
+            bag_info = info_obj.read_metadata(bag_, "mcap");
         }
         else {
             RCLCPP_ERROR(this->get_logger(), "Please submit a rosbag in sqlite3 or mcap format");
         }
 
-        auto duration = metadata.duration.count()/1000000000.0;
+        auto duration = bag_info.duration.count()/1000000000.0;
         RCLCPP_INFO(this->get_logger(), "rosbag duration = %f", duration);
 
         // 3. Loop through topic data and gather output string
@@ -106,7 +106,7 @@ public:
             auto hz_range = it->second;
             // RCLCPP_INFO(this->get_logger(), "Iterating...now on topic %s", topic.c_str());
             bool found_match = false;
-            for (auto topic_info : metadata.topics_with_message_count){
+            for (auto topic_info : bag_info.topics_with_message_count){
                 std::regex re(topic);
                 if (std::regex_match(topic_info.topic_metadata.name, re)) {
                     // RCLCPP_INFO(this->get_logger(), "Found match!");
