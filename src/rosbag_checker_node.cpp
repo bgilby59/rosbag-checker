@@ -49,7 +49,11 @@ public:
 
         frequency_requirements_ = this->get_parameter("default_frequency_requirements").as_double_array();
 
+        auto before_check = std::chrono::high_resolution_clock::now();
         check_bag();
+        auto after_check = std::chrono::high_resolution_clock::now();
+        auto time_elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(after_check - before_check).count();
+        RCLCPP_INFO(this->get_logger(), "Check bag function took %f ms to run", time_elapsed / 1000000.0);
     }
 
     void check_bag(){
