@@ -89,11 +89,11 @@ public:
         if (ends_with(bag_, ".db3")) {
             metadata = info_obj.read_metadata(bag_, "sqlite3");
         }
-        else if (ends_with(bag_, "mcap")) {
+        else if (ends_with(bag_, ".mcap")) {
             metadata = info_obj.read_metadata(bag_, "mcap");
         }
         else {
-            RCLCPP_ERROR(this->get_logger(), "Please submit a rosbag in sqlite3 or mcmap format");
+            RCLCPP_ERROR(this->get_logger(), "Please submit a rosbag in sqlite3 or mcap format");
         }
 
         auto duration = metadata.duration.count()/1000000000.0;
