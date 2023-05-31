@@ -6,6 +6,7 @@ import re
 import rclpy
 from rclpy.node import Node
 import sys
+# from rcl_interfaces.msg import ParameterDescriptor
 
 class color: # ANSI codes for printing colored text
     GREEN = '\033[1;32;48m'
@@ -76,8 +77,8 @@ class RosbagCheckerNode(Node):
 
 
         # 2. Read rosbag and get duration of rosbag
-        metadata = self.read_rosbag()
-        duration = metadata.duration
+        bag_info = self.read_rosbag()
+        duration = bag_info.duration
         duration = duration.days*86400 + duration.seconds + duration.microseconds/1000000
 
 
@@ -85,7 +86,7 @@ class RosbagCheckerNode(Node):
         output_string = ''
         for topic in topics_to_rate:
             found_match = False
-            for topic_info in metadata.topics_with_message_count:
+            for topic_info in bag_info.topics_with_message_count:
                 if re.fullmatch(topic, topic_info.topic_metadata.name): # Print information from all topics in rosbag that match topic name or regex we want to monitor
                     found_match = True
                     color_to_use = color.GREEN
@@ -118,13 +119,13 @@ class RosbagCheckerNode(Node):
         bag_info_obj = rosbag2_py.Info()
 
         if self.bag.endswith('.db3'):
-            metadata = bag_info_obj.read_metadata(self.bag, 'sqlite3') 
+            bag_info = bag_info_obj.read_metadata(self.bag, 'sqlite3') 
         elif self.bag.endswith('.mcap'):
-            metadata = bag_info_obj.read_metadata(self.bag, 'mcap') # TODO: test this
+            bag_info = bag_info_obj.read_metadata(self.bag, 'mcap') # TODO: test this
         else:
             self.get_logger().error("Provided rosbag is not an sqlite3 file or an mcap file")
         
-        return metadata
+        return bag_info
 
 
 def main(args=None):
