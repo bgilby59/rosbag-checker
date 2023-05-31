@@ -6,7 +6,7 @@ import re
 import rclpy
 from rclpy.node import Node
 import sys
-# from rcl_interfaces.msg import ParameterDescriptor
+import time
 
 class color: # ANSI codes for printing colored text
     GREEN = '\033[1;32;48m'
@@ -52,7 +52,10 @@ class RosbagCheckerNode(Node):
             
         self.frequency_requirements = self.get_parameter('default_frequency_requirements').get_parameter_value().double_array_value
 
+        before_check = time.time()
         self.check_bag()
+        after_check = time.time()
+        self.get_logger().info("Check bag function took {} ms to run".format((after_check - before_check) * 1000))
 
 
     def check_bag(self):
