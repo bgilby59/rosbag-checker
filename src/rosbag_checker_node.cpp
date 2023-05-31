@@ -17,7 +17,7 @@ public:
         this->declare_parameter("topic_list", rclcpp::PARAMETER_STRING);
         this->declare_parameter("topics", rclcpp::PARAMETER_STRING);
         this->declare_parameter("check_frequency", true);
-        this->declare_parameter("default_frequency_requirements", std::vector<double>({std::numeric_limits<double>::min(), std::numeric_limits<double>::max()}));
+        this->declare_parameter("default_frequency_requirements", std::vector<double>({std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max()}));
 
         try{
             bag_ = this->get_parameter("bag_file").as_string();
@@ -115,7 +115,10 @@ public:
                     auto msg_count = topic_info.message_count;
                     auto msg_rate = msg_count/duration;
                     
-                    if (check_frequency_) {
+                    if (msg_count == 0) {
+                        color_to_use = RED;
+                    }
+                    else if (check_frequency_) {
                         auto min_rate = hz_range[0];
                         auto max_rate = hz_range[1];
                         if (msg_rate < min_rate || msg_rate > max_rate){
