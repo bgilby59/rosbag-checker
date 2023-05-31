@@ -17,7 +17,7 @@ public:
         this->declare_parameter("topic_list", rclcpp::PARAMETER_STRING);
         this->declare_parameter("topics", rclcpp::PARAMETER_STRING);
         this->declare_parameter("check_frequency", true);
-        this->declare_parameter("default_frequency_requirements", std::vector<double>({std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max()}));
+        this->declare_parameter("default_frequency_requirements", std::vector<double>({-1, std::numeric_limits<double>::max()}));
 
         try{
             bag_ = this->get_parameter("bag_file").as_string();
