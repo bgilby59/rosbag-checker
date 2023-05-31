@@ -23,7 +23,7 @@ class RosbagCheckerNode(Node):
                 ("topic_list", rclpy.Parameter.Type.STRING),
                 ("topics", rclpy.Parameter.Type.STRING),
                 ('check_frequency', True),
-                ('default_frequency_requirements', [sys.float_info.min, sys.float_info.max])
+                ('default_frequency_requirements', [-1.0, sys.float_info.max])
             ]
         )
 
@@ -92,7 +92,9 @@ class RosbagCheckerNode(Node):
                     msg_count = topic_info.message_count
                     msg_rate = topic_info.message_count/duration
 
-                    if self.check_frequency:
+                    if msg_count == 0:
+                        color_to_use = color.RED
+                    elif self.check_frequency:
                         min_rate, max_rate = topics_to_rate[topic]
                         if (msg_rate < min_rate or msg_rate > max_rate):
                             color_to_use = color.YELLOW
