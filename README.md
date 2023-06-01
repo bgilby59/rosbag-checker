@@ -41,8 +41,11 @@ ros2 run rosbag_checker rosbag_checker --ros-args -p bag_file:=<PATH TO ROSBAG F
 ```
 
 ## List of Parameters and Descriptions
+- `help`: show usage and list of parameters
 - `bag_file`: path to rosbag file
 - `topic_list`: path to yaml file containing lists of topics and optionally frequency requirements
-- `topics`: name of topic or regular expression to check
+- `topics`: name of topic or regular expression to check (alternative to topic_list)
 - `check_frequency`: whether to check frequency requirements or not (`default: true`)
-- `default_frequency_requirements`: double array `[min_frequency, max_frequency]` representing default frequency requirements assigned to topics without specified frequency requirements (`default: [minimum float, maximum float]`)
+- `default_frequency_requirements`: default frequency requirements (`default: [-1, maximum float]`)
+- `time_check_bag`: enable to run speed test on check bag function
+- `num_runs`: number of runs for speed test if speed test is enabled 

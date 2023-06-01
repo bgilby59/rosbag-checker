@@ -8,6 +8,20 @@ from rclpy.node import Node
 import sys
 import time
 
+HELP_MESSAGE = "\n\nusage: ros2 run rosbag_checker rosbag_checker --ros-args -p <PARAMETER1> -p <PARAMETER2> ...\n\n\
+Rosbag Checker is a ros2 package for checking the contents of a rosbag\n\n\
+parameters:\n\n\
+  help                            display this help message and exit \n\
+  bag_file                        path to rosbag file \n\
+  topic_list                      path to yaml file containing lists of topics and optionally frequency requirements \n\
+  topics                          name of topic or regular expression to check (alternative to topic_list) \n\
+  check_frequency                 whether to check frequency requirements or not (default: true) \n\
+  default_frequency_requirements  default frequency requirements (default: [-1, maximum float]) \n\
+  time_check_bag                  enable to run speed test on check bag function \n\
+  num_runs                        number of runs for speed test if speed test is enabled \n\
+  \n\
+"
+
 class color: # ANSI codes for printing colored text
     GREEN = '\033[1;32;48m'
     YELLOW = '\033[1;33;48m'
@@ -26,9 +40,14 @@ class RosbagCheckerNode(Node):
                 ('check_frequency', True),
                 ('default_frequency_requirements', [-1.0, sys.float_info.max]),
                 ('time_check_bag', False),
-                ('num_runs', 1000)
+                ('num_runs', 1000),
+                ('help', False)
             ]
         )
+        
+        if self.get_parameter('help').get_parameter_value().bool_value:
+            self.get_logger().info(HELP_MESSAGE)
+            sys.exit()
 
         try:
             self.bag = self.get_parameter('bag_file').get_parameter_value().string_value
