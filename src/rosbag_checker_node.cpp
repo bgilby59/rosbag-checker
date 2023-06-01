@@ -18,6 +18,8 @@ public:
         this->declare_parameter("topics", rclcpp::PARAMETER_STRING);
         this->declare_parameter("check_frequency", true);
         this->declare_parameter("default_frequency_requirements", std::vector<double>({-1.0, std::numeric_limits<double>::max()}));
+        this->declare_parameter("time_check_bag", false);
+        this->declare_parameter("num_runs", 1000);
 
         try{
             bag_ = this->get_parameter("bag_file").as_string();
@@ -48,12 +50,15 @@ public:
         }
 
         frequency_requirements_ = this->get_parameter("default_frequency_requirements").as_double_array();
+        time_check_bag_ = this->get_parameter("time_check_bag").as_bool();
+        num_runs_ = this->get_parameter("num_runs").as_int();
 
-        auto before_check = std::chrono::high_resolution_clock::now();
-        check_bag();
-        auto after_check = std::chrono::high_resolution_clock::now();
-        auto time_elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(after_check - before_check).count();
-        RCLCPP_INFO(this->get_logger(), "Check bag function took %f ms to run", time_elapsed / 1000000.0);
+        if (time_check_bag_) {
+            time_check_bag();
+        }
+        else {
+            check_bag();
+        }        
     }
 
     void check_bag(){
@@ -146,6 +151,16 @@ public:
     bool ends_with(std::string s, std::string suffix) {
         return s.length() >= suffix.length() && !s.compare(s.length() - suffix.length(), suffix.length(), suffix);
     }
+
+    void time_check_bag(){
+        auto before_check = std::chrono::high_resolution_clock::now();
+        for (int i=0; i < num_runs_; i++) {
+            check_bag();
+        }
+        auto after_check = std::chrono::high_resolution_clock::now();
+        auto time_elapsed_check_bag = std::chrono::duration_cast<std::chrono::nanoseconds>(after_check - before_check).count();
+        RCLCPP_INFO(this->get_logger(), "Check bag function took an average of %f ms to run (average over %d runs)", time_elapsed_check_bag / (1000000.0 * num_runs_), num_runs_);
+    }
     
 
 private:
@@ -155,6 +170,8 @@ private:
     std::string topic_re_;
     bool check_frequency_;
     std::vector<double> frequency_requirements_;
+    bool time_check_bag_;
+    int num_runs_;
 };
 
 int main(int argc, char **argv)
