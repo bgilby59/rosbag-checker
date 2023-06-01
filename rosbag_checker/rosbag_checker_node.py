@@ -24,7 +24,9 @@ class RosbagCheckerNode(Node):
                 ("topic_list", rclpy.Parameter.Type.STRING),
                 ("topics", rclpy.Parameter.Type.STRING),
                 ('check_frequency', True),
-                ('default_frequency_requirements', [-1.0, sys.float_info.max])
+                ('default_frequency_requirements', [-1.0, sys.float_info.max]),
+                ('time_check_bag', False),
+                ('num_runs', 1000)
             ]
         )
 
@@ -51,11 +53,13 @@ class RosbagCheckerNode(Node):
             self.get_logger().info("Including check for frequency requirements")
             
         self.frequency_requirements = self.get_parameter('default_frequency_requirements').get_parameter_value().double_array_value
+        self.time_check_bag_bool = self.get_parameter('time_check_bag').get_parameter_value().bool_value
+        self.num_runs = self.get_parameter('num_runs').get_parameter_value().integer_value
 
-        before_check = time.time()
-        self.check_bag()
-        after_check = time.time()
-        self.get_logger().info("Check bag function took {} ms to run".format((after_check - before_check) * 1000))
+        if self.time_check_bag_bool:
+            self.time_check_bag()
+        else:
+            self.check_bag()
 
 
     def check_bag(self):
@@ -129,6 +133,14 @@ class RosbagCheckerNode(Node):
             self.get_logger().error("Provided rosbag is not an sqlite3 file or an mcap file")
         
         return bag_info
+    
+
+    def time_check_bag(self):
+        before_check = time.time()
+        for i in range(self.num_runs):
+            self.check_bag()
+        after_check = time.time()
+        self.get_logger().info("Check bag function took an average of {} ms to run (average over {} runs)".format((after_check - before_check) * (1000/self.num_runs), self.num_runs))
 
 
 def main(args=None):
