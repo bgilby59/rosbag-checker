@@ -8,6 +8,20 @@
 #define RED "\033[1;31;48m"
 #define COLOR_END "\033[1;37;0m"
 
+#define HELP_MESSAGE "\n\nusage: ros2 run rosbag_checker rosbag_checker --ros-args -p <PARAMETER1> -p <PARAMETER2> ...\n\n\
+Rosbag Checker is a ros2 package for checking the contents of a rosbag\n\n\
+parameters:\n\n\
+  help                            display this help message and exit \n\
+  bag_file                        path to rosbag file \n\
+  topic_list                      path to yaml file containing lists of topics and optionally frequency requirements \n\
+  topics                          name of topic or regular expression to check (alternative to topic_list) \n\
+  check_frequency                 whether to check frequency requirements or not (default: true) \n\
+  default_frequency_requirements  default frequency requirements (default: [-1, maximum float]) \n\
+  time_check_bag                  enable to run speed test on check bag function \n\
+  num_runs                        number of runs for speed test if speed test is enabled \n\
+  \n\
+"
+
 class RosbagCheckerNode: public rclcpp::Node 
 {
 public:
@@ -20,6 +34,12 @@ public:
         this->declare_parameter("default_frequency_requirements", std::vector<double>({-1.0, std::numeric_limits<double>::max()}));
         this->declare_parameter("time_check_bag", false);
         this->declare_parameter("num_runs", 1000);
+        this->declare_parameter("help", false);
+
+        if (this->get_parameter("help").as_bool()){
+            RCLCPP_INFO(this->get_logger(), HELP_MESSAGE);
+            exit(0);
+        }
 
         try{
             bag_ = this->get_parameter("bag_file").as_string();
