@@ -1,0 +1,5 @@
+topics:
+  - name: <topic1_name>
+    hz_range: [<min_rate>, <max_rate>]
+  - name: <topic2_name>
+    hz_range: [<min_rate, <max_rate>]
