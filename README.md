@@ -6,7 +6,7 @@ A ROS2 package to query the contents of a rosbag for message count and message f
 ### Input:
 1. rosbag in `sqlite3` or `mcap` format.
 2. one of the following:
-    - `yaml` file containing a list of topics, and optionally, frequency requirements (see example yaml file here for format).
+    - `yaml` file containing a list of topics, and optionally, frequency requirements ([see example yaml file here for format](https://github.com/bgtier4/rosbag-checker/blob/cpp/input_yaml_format.yaml)).
     - single topic name or regular expression representing topics to be checked.
 
 ### Output:
